@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        />
+
+    <EditText
+        android:id="@+id/top_caption"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:hint="Enter the top of the caption"
+        android:inputType="textPersonName"
+        android:textColor="@android:color/background_light"
+        android:textColorHint="@android:color/background_light"
+        android:textColorLink="@android:color/transparent"
+        android:background="@android:color/transparent"
+        />
+
+    <EditText
+        android:id="@+id/bottom_caption"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:background="@android:color/transparent"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:hint="Enter the bottom of the caption"
+        android:inputType="textPersonName"
+        android:textColor="@android:color/background_light"
+        android:textColorHighlight="@android:color/transparent"
+        android:textColorHint="@android:color/background_light"
+        android:textColorLink="@android:color/transparent" />
+
+    <Button
+        android:id="@+id/button_confim_text"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:text="Confim text"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <EditText
+        android:id="@+id/seekbar_R_value"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="160dp"
+        android:maxLength="5"
+        android:text="R"
+        android:inputType="none"
+        android:background="@android:color/transparent"
+        android:autofillHints="" />
+
+    <SeekBar
+        android:id="@+id/seekbar_R"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:progress="1"
+        android:layout_marginBottom="140dp"
+        android:progressTint="#fc0000"
+        android:thumbTint="#fc0000"
+        android:max="255"
+        android:min="0"
+
+        />
+
+    <EditText
+        android:id="@+id/seekbar_G_value"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="90dp"
+        android:text="G"
+        android:inputType="none"
+        android:background="@android:color/transparent"
+        android:maxLength="5"
+
+        />
+
+    <SeekBar
+        android:id="@+id/seekbar_G"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="70dp"
+        android:progress="1"
+        android:progressTint="#13ff0f"
+        android:thumbTint="#13ff0f"
+        android:max="255"
+        android:min="0"
+        />
+
+    <EditText
+        android:id="@+id/seekbar_B_value"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:text="B"
+        android:inputType="none"
+        android:background="@android:color/transparent"
+        android:maxLength="5"
+        />
+
+    <SeekBar
+        android:id="@+id/seekbar_B"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:min="0"
+        android:progress="1"
+        android:max="255"
+        android:progressTint="#0061ff"
+        android:thumbTint="#0061ff"
+        />
+
+
+</RelativeLayout>
