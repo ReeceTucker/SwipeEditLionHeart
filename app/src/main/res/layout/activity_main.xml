@@ -68,4 +68,20 @@
         android:layout_marginBottom="5dp"
         android:text="@string/reset_image" />
 
+    <fragment
+        android:id="@+id/image_fragement"
+        android:name="com.example.swipeeditlionheart.PictureFragment"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginTop="90dp"
+        tools:layout="@layout/fragment_image" />
+
+    <fragment
+        android:id="@+id/slider_fragment"
+        android:name="com.example.swipeeditlionheart.SliderFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_marginTop="480dp"
+        tools:layout="@layout/fragment_slider_layout" />
+
 </android.support.design.widget.CoordinatorLayout>
