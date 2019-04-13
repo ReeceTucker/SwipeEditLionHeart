@@ -13,28 +13,32 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class PictureFragment extends Fragment {
 
-    // Member variable
-    private static EditText topCaption;
+
+    private static EditText  topCaption;
     private static EditText bottomCaption;
     private static ImageView imageView;
     private static Button confimTextButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_slider_layout, container, false);
+                             @Nullable Bundle savedInstanceState)
 
-        imageView = (ImageView) view.findViewById(R.id.imageView);
-        topCaption = (EditText) view.findViewById(R.id.top_caption);
-        bottomCaption = (EditText) view.findViewById(R.id.bottom_caption);
-        confimTextButton = (Button) view.findViewById(R.id.button_confim_text);
+    {
+        View view = inflater.inflate(R.layout.fragment_image, container, false);
+
+        imageView =  view.findViewById(R.id.picture);
+        topCaption = view.findViewById(R.id.top_caption);
+        bottomCaption = view.findViewById(R.id.bottom_caption);
+        confimTextButton =  view.findViewById(R.id.button_confim_text);
 
         confimTextButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -45,7 +49,7 @@ public class PictureFragment extends Fragment {
                 }
         );
 
-        return view;
+        return  view;
     }
 
     // This method handles the confirm button being press and editing the Bitmap and put the text entered onto it

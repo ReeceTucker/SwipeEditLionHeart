@@ -1,5 +1,9 @@
 package com.example.swipeeditlionheart;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +20,33 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+
+import static android.graphics.BitmapFactory.*;
+import static com.example.swipeeditlionheart.R.drawable.tumblr_logo;
+
+public class MainActivity extends AppCompatActivity implements SliderFragment.SliderLister {
+
+    // List of the images and member variables
+    ArrayList<Bitmap> arrayOfBitmaps = new ArrayList<Bitmap>();
+    ArrayList<Bitmap> arrayEditedOfBitmaps = new ArrayList<Bitmap>();
+    private static Button saveButton;
+    private static Button resetButton;
+    private int pageCount = 0;
+
+    public SliderFragment fragmentSlider = new SliderFragment();
+    public PictureFragment pictureSectionFragment = new PictureFragment();
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -42,6 +70,28 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        saveButton = findViewById(R.id.save_button);
+        resetButton = findViewById(R.id.reset_button);
+
+        saveButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        SaveImage();
+                    }
+                }
+        );
+
+        resetButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ResetImage();
+                    }
+                }
+        );
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -49,6 +99,33 @@ public class MainActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.image_fragement);
+                ImageView imageView = fragment.getView().findViewById(R.id.picture);
+                imageView.setImageBitmap(arrayEditedOfBitmaps.get(position));
+                SetPosition(position);
+                pictureSectionFragment.resetCaption();
+                fragmentSlider.restSliders();
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        // Just initializes the bitmap arrays
+        setImageArrays();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +136,66 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    // Getters and setters for the view pager count
+    public void SetPosition (int position)
+    {
+        pageCount = position;
+    }
+    public int GetPosition ()
+    {
+        return pageCount;
+    }
+
+    // This method simply resets the images to the original state and everything else
+    private void ResetImage() {
+
+        Fragment imageFragment = getSupportFragmentManager().findFragmentById(R.id.image_fragement);
+        ImageView imageView = imageFragment.getView().findViewById(R.id.picture);
+        imageView.setImageBitmap(arrayOfBitmaps.get(GetPosition()));
+
+        pictureSectionFragment.resetCaption();
+        fragmentSlider.restSliders();
+
+    }
+
+    // This method will save the image to the android device allowing them to share it how they like.
+    private void SaveImage() {
+
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.image_fragement);
+        ImageView imageView = fragment.getView().findViewById(R.id.picture);
+        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+
+        arrayEditedOfBitmaps.remove(GetPosition());
+        arrayEditedOfBitmaps.add(GetPosition(), bitmap);
+
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+        OutputStream fOutputStream = null;
+
+        File mFolder = new File(getFilesDir() + "/sample");
+        File imgFile = new File(mFolder.getAbsolutePath() + GetPosition() + "image.png");
+
+        if (!mFolder.exists()) {
+            mFolder.mkdir();
+        }
+        if (!imgFile.exists()) {
+        }
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(imgFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG,70, fos);
+            fos.flush();
+            fos.close();
+            Toast.makeText(this, "We have saved this image", Toast.LENGTH_SHORT).show();
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -82,6 +219,42 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // the Interface method
+    @Override
+    public void colourImage(int iRed, int iGreen, int iBlue) {
+
+        PictureFragment pictureSectionFragment = (PictureFragment) getSupportFragmentManager().findFragmentById(R.id.image_fragement);
+        ImageView imageView = (ImageView)pictureSectionFragment.getView().findViewById(R.id.picture);
+        Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+        imageView.setImageBitmap(pictureSectionFragment.Editphoto(bitmap, iRed, iGreen, iBlue));
+        Toast.makeText(this, "To save this picture please press the save image button", Toast.LENGTH_SHORT).show();
+    }
+
+    public void setImageArrays()
+    {
+        Bitmap bitmap1 = decodeResource(getResources(), R.drawable.me);//assign your bitmap;
+        Bitmap bitmap2 = decodeResource(getResources(), R.drawable.facebook_logo);//assign your bitmap;
+        Bitmap bitmap3 = decodeResource(getResources(), R.drawable.instagram_icon);//assign your bitmap;
+        Bitmap bitmap4 = decodeResource(getResources(), R.drawable.yt_logo_rgb_light);//assign your bitmap;
+        Bitmap bitmap5 = decodeResource(getResources(), R.drawable.twitter_logo_whiteonblue);//assign your bitmap;
+        Bitmap bitmap6 = decodeResource(getResources(), tumblr_logo);//assign your bitmap;
+        Bitmap bitmap7 = decodeResource(getResources(), R.drawable.linkin_logo);//assign your bitmap;
+        arrayOfBitmaps.add(bitmap1);
+        arrayOfBitmaps.add(bitmap2);
+        arrayOfBitmaps.add(bitmap3);
+        arrayOfBitmaps.add(bitmap4);
+        arrayOfBitmaps.add(bitmap5);
+        arrayOfBitmaps.add(bitmap6);
+        arrayOfBitmaps.add(bitmap7);
+        arrayEditedOfBitmaps.add(bitmap1);
+        arrayEditedOfBitmaps.add(bitmap2);
+        arrayEditedOfBitmaps.add(bitmap3);
+        arrayEditedOfBitmaps.add(bitmap4);
+        arrayEditedOfBitmaps.add(bitmap5);
+        arrayEditedOfBitmaps.add(bitmap6);
+        arrayEditedOfBitmaps.add(bitmap7);
     }
 
     /**
@@ -138,8 +311,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            // Show 7 total pages.
+            return 7;
         }
     }
 }
