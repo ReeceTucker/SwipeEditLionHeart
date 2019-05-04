@@ -14,19 +14,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class PictureFragment extends Fragment {
+public class PictureFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
 
     private static EditText  topCaption;
     private static EditText bottomCaption;
     private static ImageView imageView;
     private static Button confimTextButton;
+    private String color;
+    private int colorchosen = 0;
+    Spinner spinner;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -49,6 +53,11 @@ public class PictureFragment extends Fragment {
                 }
         );
 
+        spinner = view.findViewById(R.id.spinner_colors);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(), R.array.colors, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
         return  view;
     }
 
@@ -58,6 +67,23 @@ public class PictureFragment extends Fragment {
         Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
         imageView.setImageBitmap(DrawCaption(bitmap, topCaption.getText().toString(), bottomCaption.getText().toString()));
         Toast.makeText(getActivity(),"Press the save button to save this image", Toast.LENGTH_SHORT).show();
+        if(topCaption.getText().length() != 0)
+        {
+            topCaption.setVisibility(view.INVISIBLE);
+            topCaption.setText("");
+        }
+
+        if(bottomCaption.getText().length() != 0)
+        {
+            bottomCaption.setVisibility(view.INVISIBLE);
+            bottomCaption.setText("");
+        }
+
+        if(topCaption.getText().length() != 0 && bottomCaption.getText().length() != 0)
+        {
+            spinner.setVisibility(view.INVISIBLE);
+        }
+
     }
 
     // This method will loop through all of the pixels in the Bitmap and tweak it by the RBG passed in
@@ -105,7 +131,7 @@ public class PictureFragment extends Fragment {
             // new antialised Paint
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
             // text color - #3D3D3D
-            paint.setColor(Color.rgb(255,0, 0));
+            paint.setColor(colorchosen);
             // text size in pixels
             paint.setTextSize((int) (16 * scale));
             // text shadow
@@ -115,7 +141,7 @@ public class PictureFragment extends Fragment {
             Rect bounds = new Rect();
             paint.getTextBounds(topCaption, 0, topCaption.length(), bounds);
             paint.getTextBounds(bottomCaption, 0, bottomCaption.length(), bounds);
-            int xTop = (bitmap.getWidth() - bounds.width())/ 7;
+            int xTop = (bitmap.getWidth() - bounds.width())/ 8;
             int yTop = (bitmap.getHeight() + bounds.height())/ 20;
             int xBottom = (bitmap.getWidth() - bounds.width()) / 7;
             int yBottom = (bitmap.getHeight() + bounds.height())/ 5;
@@ -136,5 +162,19 @@ public class PictureFragment extends Fragment {
     {
         topCaption.setText("");
         bottomCaption.setText("");
+    }
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        color = parent.getItemAtPosition(position).toString();
+        colorchosen = Color.parseColor(color);
+        spinner.setBackgroundColor(colorchosen);
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

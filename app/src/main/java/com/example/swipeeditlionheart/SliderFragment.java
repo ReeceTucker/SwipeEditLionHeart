@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
 public class SliderFragment extends Fragment {

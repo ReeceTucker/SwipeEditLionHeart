@@ -1,42 +1,38 @@
 package com.example.swipeeditlionheart;
 
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Environment;
+import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.facebook.AccessToken;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
-import static android.graphics.BitmapFactory.*;
-import static com.example.swipeeditlionheart.R.drawable.tumblr_logo;
 
-public class MainActivity extends AppCompatActivity implements SliderFragment.SliderLister {
+public class MainActivity extends AppCompatActivity implements SliderFragment.SliderLister  {
 
     // List of the images and member variables
     ArrayList<Bitmap> arrayOfBitmaps = new ArrayList<Bitmap>();
@@ -47,6 +43,13 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
 
     public SliderFragment fragmentSlider = new SliderFragment();
     public PictureFragment pictureSectionFragment = new PictureFragment();
+
+    SaveLoadImages saveLoadImages = new SaveLoadImages();
+    LoginActivity loginActivity;
+
+    public interface AsyncResponse {
+        void processFinish(Bitmap bitmap);
+    }
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -68,11 +71,10 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         saveButton = findViewById(R.id.save_button);
         resetButton = findViewById(R.id.reset_button);
+
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
         saveButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -88,6 +90,12 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
                     @Override
                     public void onClick(View view) {
                         ResetImage();
+                        TextView topCaption = findViewById(R.id.top_caption);
+                        TextView bottomCaption = findViewById(R.id.bottom_caption);
+                        Spinner spinner = findViewById(R.id.spinner_colors);
+                        topCaption.setVisibility(view.VISIBLE);
+                        bottomCaption.setVisibility(view.VISIBLE);
+                        spinner.setVisibility(view.VISIBLE);
                     }
                 }
         );
@@ -99,7 +107,6 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -124,6 +131,8 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
             }
         });
 
+
+
         // Just initializes the bitmap arrays
         setImageArrays();
 
@@ -131,8 +140,15 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                Uri uri = saveLoadImages.GetImageUri(arrayEditedOfBitmaps.get(GetPosition()), view.getContext());
+
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                shareIntent.setType("image/png");
+                startActivity(Intent.createChooser(shareIntent, "Image"));
             }
         });
 
@@ -160,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
 
     }
 
-    // This method will save the image to the android device allowing them to share it how they like.
+    // This method will save the image to edited image array which we will use to share the images
     private void SaveImage() {
 
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.image_fragement);
@@ -169,33 +185,7 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
 
         arrayEditedOfBitmaps.remove(GetPosition());
         arrayEditedOfBitmaps.add(GetPosition(), bitmap);
-
-        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-        OutputStream fOutputStream = null;
-
-        File mFolder = new File(getFilesDir() + "/sample");
-        File imgFile = new File(mFolder.getAbsolutePath() + GetPosition() + "image.png");
-
-        if (!mFolder.exists()) {
-            mFolder.mkdir();
-        }
-        if (!imgFile.exists()) {
-        }
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(imgFile);
-            bitmap.compress(Bitmap.CompressFormat.PNG,70, fos);
-            fos.flush();
-            fos.close();
-            Toast.makeText(this, "We have saved this image", Toast.LENGTH_SHORT).show();
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+        Toast.makeText(this, "This picture has been saved, and is ready to share", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -232,30 +222,20 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
         Toast.makeText(this, "To save this picture please press the save image button", Toast.LENGTH_SHORT).show();
     }
 
-    public void setImageArrays()
-    {
-        Bitmap bitmap1 = decodeResource(getResources(), R.drawable.me);//assign your bitmap;
-        Bitmap bitmap2 = decodeResource(getResources(), R.drawable.facebook_logo);//assign your bitmap;
-        Bitmap bitmap3 = decodeResource(getResources(), R.drawable.instagram_icon);//assign your bitmap;
-        Bitmap bitmap4 = decodeResource(getResources(), R.drawable.yt_logo_rgb_light);//assign your bitmap;
-        Bitmap bitmap5 = decodeResource(getResources(), R.drawable.twitter_logo_whiteonblue);//assign your bitmap;
-        Bitmap bitmap6 = decodeResource(getResources(), tumblr_logo);//assign your bitmap;
-        Bitmap bitmap7 = decodeResource(getResources(), R.drawable.linkin_logo);//assign your bitmap;
-        arrayOfBitmaps.add(bitmap1);
-        arrayOfBitmaps.add(bitmap2);
-        arrayOfBitmaps.add(bitmap3);
-        arrayOfBitmaps.add(bitmap4);
-        arrayOfBitmaps.add(bitmap5);
-        arrayOfBitmaps.add(bitmap6);
-        arrayOfBitmaps.add(bitmap7);
-        arrayEditedOfBitmaps.add(bitmap1);
-        arrayEditedOfBitmaps.add(bitmap2);
-        arrayEditedOfBitmaps.add(bitmap3);
-        arrayEditedOfBitmaps.add(bitmap4);
-        arrayEditedOfBitmaps.add(bitmap5);
-        arrayEditedOfBitmaps.add(bitmap6);
-        arrayEditedOfBitmaps.add(bitmap7);
+    public void setImageArrays() {
+        Bitmap bitmap;
+        String strFileDirectory = getCacheDir() + "/sample";
+        File dir = new File(strFileDirectory);
+        if (dir.exists()) {
+            for (File f : dir.listFiles()) {
+                bitmap = BitmapFactory.decodeFile(strFileDirectory + "/" + f.getName());
+                arrayOfBitmaps.add(bitmap);
+
+            }
+            arrayEditedOfBitmaps = new ArrayList<>(arrayOfBitmaps);
+        }
     }
+
 
     /**
      * A placeholder fragment containing a simple view.
@@ -315,4 +295,56 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
             return 7;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        trimCache(this);
+        Intent intent = new Intent(this, LoginActivity.class);
+        this.startActivity(intent);
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+    }
+
+    //Fires after the OnStop() state
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            trimCache(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void trimCache(Context context) {
+        try {
+            File dir = context.getCacheDir();
+            if (dir != null && dir.isDirectory()) {
+                deleteDir(dir);
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+
+        // The directory is now empty so delete it
+        return dir.delete();
+    }
+
 }
+
