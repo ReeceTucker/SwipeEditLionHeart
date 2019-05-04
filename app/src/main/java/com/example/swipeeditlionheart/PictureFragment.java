@@ -130,7 +130,7 @@ public class PictureFragment extends Fragment implements AdapterView.OnItemSelec
             Canvas canvas = new Canvas(bitmap);
             // new antialised Paint
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            // text color - #3D3D3D
+            // text color - this is whatever the user has selected in the spinner list
             paint.setColor(colorchosen);
             // text size in pixels
             paint.setTextSize((int) (16 * scale));
