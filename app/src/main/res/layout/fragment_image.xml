@@ -31,7 +31,7 @@
         android:id="@+id/bottom_caption"
         android:layout_width="500dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="60dp"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:ems="10"
@@ -44,6 +44,7 @@
 
     <Button
         android:id="@+id/button_confim_text"
+        style="@style/Widget.AppCompat.Button"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -60,6 +61,8 @@
         android:layout_centerInParent="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="40dp"
+        android:padding="2dp"
+        android:outlineAmbientShadowColor="@color/button_colors"
 
         />
 

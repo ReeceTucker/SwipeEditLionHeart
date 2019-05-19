@@ -21,10 +21,10 @@ public class SliderFragment extends Fragment {
     private  static ArrayList<EditText> textViewlist =new ArrayList<EditText>();
 
     // Creating an interface
-    SliderLister activityCommander;
+    private SliderLister activityCommander;
     public interface SliderLister
     {
-        public void colourImage(int iRed, int iGreen, int iBlue);
+        void colourImage(int iRed, int iGreen, int iBlue);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class SliderFragment extends Fragment {
         return view;
     }
 
-    public void setSeekBar(final ArrayList<SeekBar> seekBarlist, ArrayList<EditText> textList, final View view)
+    private void setSeekBar(final ArrayList<SeekBar> seekBarlist, ArrayList<EditText> textList, final View view)
     {
         for (int i = 0; i < seekBarlist.size(); i++) {
             for (int y = 0; y < textList.size(); y++) {
@@ -127,7 +127,7 @@ public class SliderFragment extends Fragment {
         }
     }
 
-    public void seekBarHasChanged(int redProgress, int greenProgress, int blueProgress)
+    private void seekBarHasChanged(int redProgress, int greenProgress, int blueProgress)
     {
         activityCommander.colourImage(redProgress, greenProgress, blueProgress);
     }

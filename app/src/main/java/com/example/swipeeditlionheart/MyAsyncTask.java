@@ -10,21 +10,18 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
 import static com.facebook.login.widget.ProfilePictureView.TAG;
 
-public class MyAsyncTask extends AsyncTask<String, Void, Bitmap>
+class MyAsyncTask extends AsyncTask<String, Void, Bitmap>
 {
-    int mCount = 0;
-    Bitmap mBitmap = null;
-    LoginActivity loginActivity;
+    private LoginActivity loginActivity;
     private Context context;
     ArrayList<Bitmap> arrayOfBitmaps = new ArrayList<Bitmap>();
-    SaveLoadImages saveImages = new SaveLoadImages();
+    private SaveLoadImages saveImages = new SaveLoadImages();
 
     public MyAsyncTask(LoginActivity loginActivity, Context context)
     {
@@ -56,9 +53,9 @@ public class MyAsyncTask extends AsyncTask<String, Void, Bitmap>
     {
         loginActivity.dialog.show();
         loginActivity.dialog.setMessage("Wait one moment, just fetching your images");
-        saveImages.CacheImage(bitmap, context, "Images");
+        saveImages.CacheImage(bitmap, context, "");
 
-        if (saveImages.ReadFileCount(context.getCacheDir() + "/sample") ==7)
+        if (saveImages.ReadFileCount(context.getCacheDir() + "/sample") == 7)
         {
             loginActivity.dialog.hide();
 
@@ -69,5 +66,6 @@ public class MyAsyncTask extends AsyncTask<String, Void, Bitmap>
         }
 
     }
+
 }
 

@@ -1,21 +1,19 @@
 package com.example.swipeeditlionheart;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,53 +26,37 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.AccessToken;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements SliderFragment.SliderLister  {
 
     // List of the images and member variables
-    ArrayList<Bitmap> arrayOfBitmaps = new ArrayList<Bitmap>();
-    ArrayList<Bitmap> arrayEditedOfBitmaps = new ArrayList<Bitmap>();
-    private static Button saveButton;
-    private static Button resetButton;
+    private ArrayList<Bitmap> arrayOfBitmaps = new ArrayList<Bitmap>();
+    private ArrayList<Bitmap> arrayEditedOfBitmaps = new ArrayList<Bitmap>();
     private int pageCount = 0;
 
-    public SliderFragment fragmentSlider = new SliderFragment();
-    public PictureFragment pictureSectionFragment = new PictureFragment();
+    private SliderFragment fragmentSlider = new SliderFragment();
+    private PictureFragment pictureSectionFragment = new PictureFragment();
 
-    SaveLoadImages saveLoadImages = new SaveLoadImages();
+    private SaveLoadImages saveLoadImages = new SaveLoadImages();
     LoginActivity loginActivity;
 
-    public interface AsyncResponse {
-        void processFinish(Bitmap bitmap);
-    }
+    private boolean blocalImages = false;
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        saveButton = findViewById(R.id.save_button);
-        resetButton = findViewById(R.id.reset_button);
+        Button saveButton = findViewById(R.id.save_button);
+        Button resetButton = findViewById(R.id.reset_button);
 
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (getIntent().getExtras() != null)
+        {
+            blocalImages = getIntent().getExtras().getBoolean("bLocalImages");
+        }
 
         saveButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -93,27 +75,34 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
                         TextView topCaption = findViewById(R.id.top_caption);
                         TextView bottomCaption = findViewById(R.id.bottom_caption);
                         Spinner spinner = findViewById(R.id.spinner_colors);
-                        topCaption.setVisibility(view.VISIBLE);
-                        bottomCaption.setVisibility(view.VISIBLE);
-                        spinner.setVisibility(view.VISIBLE);
+                        topCaption.setVisibility(View.VISIBLE);
+                        bottomCaption.setVisibility(View.VISIBLE);
+                        spinner.setVisibility(View.VISIBLE);
                     }
                 }
         );
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        ViewPager mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        // Set up the tab layout
+//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+//        tabLayout.setupWithViewPager(mViewPager, true);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.image_fragement);
-                ImageView imageView = fragment.getView().findViewById(R.id.picture);
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.image_fragment);
+                ImageView imageView = null;
+                if (fragment != null) {
+                    imageView = fragment.getView().findViewById(R.id.picture);
+                }
                 imageView.setImageBitmap(arrayEditedOfBitmaps.get(position));
                 SetPosition(position);
                 pictureSectionFragment.resetCaption();
@@ -132,11 +121,7 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
         });
 
 
-
-        // Just initializes the bitmap arrays
-        setImageArrays();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,14 +137,21 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
             }
         });
 
+        if (blocalImages)
+        {
+            saveLoadImages.LoadLocalStore(this.getApplicationContext());
+        }
+
+        // Just initializes the bitmap arrays
+        setImageArrays();
     }
 
     // Getters and setters for the view pager count
-    public void SetPosition (int position)
+    private void SetPosition(int position)
     {
         pageCount = position;
     }
-    public int GetPosition ()
+    private int GetPosition()
     {
         return pageCount;
     }
@@ -167,8 +159,11 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
     // This method simply resets the images to the original state and everything else
     private void ResetImage() {
 
-        Fragment imageFragment = getSupportFragmentManager().findFragmentById(R.id.image_fragement);
-        ImageView imageView = imageFragment.getView().findViewById(R.id.picture);
+        Fragment imageFragment = getSupportFragmentManager().findFragmentById(R.id.image_fragment);
+        ImageView imageView = null;
+        if (imageFragment != null) {
+            imageView = imageFragment.getView().findViewById(R.id.picture);
+        }
         imageView.setImageBitmap(arrayOfBitmaps.get(GetPosition()));
 
         pictureSectionFragment.resetCaption();
@@ -179,8 +174,11 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
     // This method will save the image to edited image array which we will use to share the images
     private void SaveImage() {
 
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.image_fragement);
-        ImageView imageView = fragment.getView().findViewById(R.id.picture);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.image_fragment);
+        ImageView imageView = null;
+        if (fragment != null) {
+            imageView = fragment.getView().findViewById(R.id.picture);
+        }
         Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
 
         arrayEditedOfBitmaps.remove(GetPosition());
@@ -215,14 +213,17 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
     @Override
     public void colourImage(int iRed, int iGreen, int iBlue) {
 
-        PictureFragment pictureSectionFragment = (PictureFragment) getSupportFragmentManager().findFragmentById(R.id.image_fragement);
-        ImageView imageView = (ImageView)pictureSectionFragment.getView().findViewById(R.id.picture);
+        PictureFragment pictureSectionFragment = (PictureFragment) getSupportFragmentManager().findFragmentById(R.id.image_fragment);
+        ImageView imageView = null;
+        if (pictureSectionFragment != null) {
+            imageView = pictureSectionFragment.getView().findViewById(R.id.picture);
+        }
         Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
         imageView.setImageBitmap(pictureSectionFragment.Editphoto(bitmap, iRed, iGreen, iBlue));
         Toast.makeText(this, "To save this picture please press the save image button", Toast.LENGTH_SHORT).show();
     }
 
-    public void setImageArrays() {
+    private void setImageArrays() {
         Bitmap bitmap;
         String strFileDirectory = getCacheDir() + "/sample";
         File dir = new File(strFileDirectory);
@@ -230,9 +231,14 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
             for (File f : dir.listFiles()) {
                 bitmap = BitmapFactory.decodeFile(strFileDirectory + "/" + f.getName());
                 arrayOfBitmaps.add(bitmap);
-
             }
             arrayEditedOfBitmaps = new ArrayList<>(arrayOfBitmaps);
+
+            try {
+                trimCache(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -254,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
+        static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -266,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+            TextView textView = rootView.findViewById(R.id.section_label);
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
         }
@@ -276,9 +282,9 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -320,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
         }
     }
 
-    public void trimCache(Context context) {
+    private void trimCache(Context context) {
         try {
             File dir = context.getCacheDir();
             if (dir != null && dir.isDirectory()) {
@@ -331,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
         }
     }
 
-    public static boolean deleteDir(File dir) {
+    private static boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
             for (int i = 0; i < children.length; i++) {

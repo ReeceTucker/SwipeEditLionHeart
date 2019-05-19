@@ -1,6 +1,7 @@
 package com.example.swipeeditlionheart;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -17,7 +18,9 @@ import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity {
 
-    Button loginButton;
+    private Button loginButton;
+    private Button localImagesButton;
+
     ProgressDialog dialog;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +29,10 @@ public class LoginActivity extends AppCompatActivity {
 
         dialog = new ProgressDialog(LoginActivity.this);
 
-        //my custom Facebook button
-        loginButton = (Button) findViewById(R.id.fb);
+        // my custom Facebook button
+        loginButton = findViewById(R.id.fb);
+        // local store images
+        localImagesButton = findViewById(R.id.app_images);
 
     }
 
@@ -37,11 +42,21 @@ public class LoginActivity extends AppCompatActivity {
                     new AccessToken(getString(R.string.fb_accessToken),getString(R.string.facebook_app_id),getString(R.string.fb_user_id), null,
                             null,
                             AccessTokenSource.TEST_USER,
-                            new Date(System.currentTimeMillis() + 100000000 * 60 * 60 * 5),
-                            new Date(), null));
+                            new Date(System.currentTimeMillis() + 43200),
+                            new Date(43200), new Date(43200)));
 
             FindProfileDirectory();
 
+        }
+    }
+
+    public void onClickLocalImages(View view)
+    {
+        if (view == localImagesButton)
+        {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("bLocalImages", true);
+            this.startActivity(intent);
         }
     }
 
@@ -56,11 +71,11 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onCompleted(GraphResponse response) {
 
-                        String albumID = null;
+                        String albumID;
                         try {
                             JSONObject json = response.getJSONObject();
                             JSONArray jarray = json.getJSONArray("data");
-                            if (json != null) {
+                            if (jarray != null) {
                                 for (int i = 0; i < jarray.length(); i++) {
                                     JSONObject oneAlbum = jarray.getJSONObject(i);
                                     //get albums id

@@ -21,16 +21,21 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PictureFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
 
     private static EditText  topCaption;
     private static EditText bottomCaption;
     private static ImageView imageView;
-    private static Button confimTextButton;
-    private String color;
-    private int colorchosen = 0;
-    Spinner spinner;
+    private int colorChosen = 0;
+    private Spinner spinner;
+
+    private Map<String, String> colors = new HashMap<>();
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -42,7 +47,7 @@ public class PictureFragment extends Fragment implements AdapterView.OnItemSelec
         imageView =  view.findViewById(R.id.picture);
         topCaption = view.findViewById(R.id.top_caption);
         bottomCaption = view.findViewById(R.id.bottom_caption);
-        confimTextButton =  view.findViewById(R.id.button_confim_text);
+        Button confimTextButton = view.findViewById(R.id.button_confim_text);
 
         confimTextButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -52,6 +57,14 @@ public class PictureFragment extends Fragment implements AdapterView.OnItemSelec
                     }
                 }
         );
+
+        colors.put("Purple", "#9400D3");
+        colors.put("Violet", "#4B0082");
+        colors.put("Blue", "#0000FF");
+        colors.put("Green", "#00FF00");
+        colors.put("Yellow", "#FFFF00");
+        colors.put("Orange", "#FF7F00");
+        colors.put("Red", "#FF0000");
 
         spinner = view.findViewById(R.id.spinner_colors);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(), R.array.colors, android.R.layout.simple_spinner_item);
@@ -67,21 +80,21 @@ public class PictureFragment extends Fragment implements AdapterView.OnItemSelec
         Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
         imageView.setImageBitmap(DrawCaption(bitmap, topCaption.getText().toString(), bottomCaption.getText().toString()));
         Toast.makeText(getActivity(),"Press the save button to save this image", Toast.LENGTH_SHORT).show();
-        if(topCaption.getText().length() != 0)
+        if (topCaption.getText().length() != 0)
         {
-            topCaption.setVisibility(view.INVISIBLE);
+            topCaption.setVisibility(View.INVISIBLE);
             topCaption.setText("");
         }
 
-        if(bottomCaption.getText().length() != 0)
+        if (bottomCaption.getText().length() != 0)
         {
-            bottomCaption.setVisibility(view.INVISIBLE);
+            bottomCaption.setVisibility(View.INVISIBLE);
             bottomCaption.setText("");
         }
 
-        if(topCaption.getText().length() != 0 && bottomCaption.getText().length() != 0)
+        if (topCaption.getText().length() != 0 && bottomCaption.getText().length() != 0)
         {
-            spinner.setVisibility(view.INVISIBLE);
+            spinner.setVisibility(View.INVISIBLE);
         }
 
     }
@@ -104,15 +117,13 @@ public class PictureFragment extends Fragment implements AdapterView.OnItemSelec
                 int Blue = B + Color.blue(pixelColor);
 
                 editedImage.setPixel(x, y, Color.argb(A,Red,Green,Blue));
-
             }
-
         }
         return editedImage;
     }
 
     // This method will draw the Top and bottom caption onto the bit map onces the user has confimed their text
-    public Bitmap DrawCaption(Bitmap bitmap, String topCaption, String bottomCaption)
+    private Bitmap DrawCaption(Bitmap bitmap, String topCaption, String bottomCaption)
     {
         try{
 
@@ -131,7 +142,7 @@ public class PictureFragment extends Fragment implements AdapterView.OnItemSelec
             // new antialised Paint
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
             // text color - this is whatever the user has selected in the spinner list
-            paint.setColor(colorchosen);
+            paint.setColor(colorChosen);
             // text size in pixels
             paint.setTextSize((int) (16 * scale));
             // text shadow
@@ -167,9 +178,10 @@ public class PictureFragment extends Fragment implements AdapterView.OnItemSelec
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        color = parent.getItemAtPosition(position).toString();
-        colorchosen = Color.parseColor(color);
-        spinner.setBackgroundColor(colorchosen);
+        String colorName = parent.getItemAtPosition(position).toString();
+        String color = colors.get(colorName);
+        colorChosen = Color.parseColor(color);
+        spinner.setBackgroundColor(colorChosen);
 
     }
 

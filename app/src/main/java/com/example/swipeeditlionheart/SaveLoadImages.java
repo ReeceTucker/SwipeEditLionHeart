@@ -1,6 +1,7 @@
 package com.example.swipeeditlionheart;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -11,8 +12,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-public class SaveLoadImages {
 
+import static android.graphics.BitmapFactory.decodeResource;
+
+class SaveLoadImages {
+
+    private Context context2;
 
     public void CacheImage(Bitmap bitmap, Context context, String strFolder) {
 
@@ -31,7 +36,7 @@ public class SaveLoadImages {
                 e.printStackTrace();
             }
         }
-        FileOutputStream fos = null;
+        FileOutputStream fos;
         try {
             fos = new FileOutputStream(imgFile);
             bitmap.compress(Bitmap.CompressFormat.PNG, 70, fos);
@@ -67,7 +72,9 @@ public class SaveLoadImages {
             for (File f : dir.listFiles()) {
 
                 bitmap = BitmapFactory.decodeFile(strFileDirectory + "/" + f.getName());
-                test.add(bitmap);
+                if (test != null) {
+                    test.add(bitmap);
+                }
             }
         }
         return test;
@@ -80,7 +87,9 @@ public class SaveLoadImages {
             for (File f : dir.listFiles())
             {
                 Uri uri = Uri.parse(f.getPath());
-                test.add(uri);
+                if (test != null) {
+                    test.add(uri);
+                }
             }
 
         }
@@ -104,6 +113,27 @@ public class SaveLoadImages {
 
         }
         return uri;
+    }
+
+    public void LoadLocalStore(Context context)
+    {
+        ArrayList<Bitmap> bitmaps = new ArrayList<>();
+        bitmaps.add(decodeResource(context.getResources(), R.drawable.me));
+        bitmaps.add(decodeResource(context.getResources(), R.drawable.instagram_icon));
+        bitmaps.add(decodeResource(context.getResources(), R.drawable.facebook_logo));
+        bitmaps.add(decodeResource(context.getResources(), R.drawable.linkin_logo));
+        bitmaps.add(decodeResource(context.getResources(), R.drawable.tumblr_logo));
+        bitmaps.add(decodeResource(context.getResources(), R.drawable.yt_logo_rgb_light));
+        bitmaps.add(decodeResource(context.getResources(), R.drawable.twitter_logo_whiteonblue));
+
+        for (int i = 0; i < bitmaps.size(); i++)
+        {
+            Bitmap bitmapCompressed;
+
+            bitmapCompressed = bitmaps.get(i);
+
+            CacheImage(bitmapCompressed, context, "Images");
+        }
     }
 }
 

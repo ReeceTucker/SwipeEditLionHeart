@@ -16,20 +16,35 @@
         >
 
         <Button
-            android:background="#3B5998"
-            android:layout_width="wrap_content"
+            android:id="@+id/fb"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="287dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="200dp"
             android:layout_marginBottom="30dp"
-            android:id="@+id/fb"
+            android:background="#3B5998"
             android:onClick="onClickFacebookButton"
-            android:textAllCaps="false"
             android:text="Sign in with Facebook"
-            android:textSize="22sp"
-            android:textColor="#ffffff" />
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="#ffffff"
+            android:textSize="22sp" />
 
 
+        <Button
+            android:id="@+id/app_images"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="287dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/button_colors"
+            android:onClick="onClickLocalImages"
+            android:text="Use the default images"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="#ffffff"
+            android:textSize="22sp" />
 
     </LinearLayout>
 </RelativeLayout>
