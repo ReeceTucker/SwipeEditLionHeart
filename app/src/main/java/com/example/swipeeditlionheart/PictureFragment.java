@@ -171,8 +171,8 @@ public class PictureFragment extends Fragment implements AdapterView.OnItemSelec
 
     public void resetCaption()
     {
-        topCaption.setVisibility(View.INVISIBLE);
-        bottomCaption.setVisibility(View.INVISIBLE);
+        topCaption.setVisibility(View.VISIBLE);
+        bottomCaption.setVisibility(View.VISIBLE);
         topCaption.setText("");
         bottomCaption.setText("");
     }
