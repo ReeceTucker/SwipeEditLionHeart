@@ -6,6 +6,7 @@
     <color name="button_colors">#607D8B</color>
     <color name="dark_primary">#FFA000</color>
     <color name="light_yellow">#FFC107</color>
+    <color name="white">#FFFFFF</color>
 
 
 </resources>

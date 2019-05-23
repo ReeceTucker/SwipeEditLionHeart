@@ -1,15 +1,17 @@
 <resources>
-    <string name="app_name">SwipeEditLionHeart</string>
+    <string name="app_name">Swipe Edit</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Image: %1$d Swipe right to see more</string>
     <string name="save_image"> Save image</string>
     <string name="reset_image">Reset image</string>
     <string name="facebook_app_id">2299208753450967</string>
     <string name="fb_login_protocol_scheme">fb2299208753450967</string>
-    <string name="fb_accessToken">EAAgrHkEDj9cBAJNidvwNSvX6XgvVXdaGbwGPd8CI3UNVLy7SeyAnKycA7xYCE1JTZAmCEmvUAzq4Sv7H66kO7iDuAjsk0B6ETFITarbhS0Qut6obe8vj4Na1uFkqf9XrLiOYz5DjeEZAMUx28O98YZBIoFS40dSt8Vn1tWDjv9txfSIT3fJ6HHSNiv2jfNpeLA4TUOZAZCb7DXZCZBuKTcL</string>
-    <string name="fb_user_id">100037010470687</string>
+    <string name="fb_accessToken">EAAgrHkEDj9cBAE3O3j7oZCLItIV30iHjweudHFZCVEdeZAIZBR7ZCb2vJHJdyAZCFi8eGZASY3oGUjenNpVh7WMJUe4akCb6AQW4M0msB2YBknmNwS8xgVgllZBO0nxq2G0UCGqybeiAMxKhsZBAxPuK5F2vH5wfmDdUtJLRn2U9xiPaDpezoiVJBVLAcmQyMUQT5bctW4xgj3wMcJjo1JzkX</string>
+    <string name="fb_user_id">110853573486447</string>
 
     <string-array name = "colors">
+        <item>White</item>
+        <item>Black</item>
         <item>Purple</item>
         <item>Violet</item>
         <item>Blue</item>
@@ -18,4 +20,15 @@
         <item>Orange</item>
         <item>Red</item>
     </string-array>>
+
+    <string-array name = "filters">
+        <item>Normal</item>
+        <item>Crystal</item>
+        <item>Cloud</item>
+        <item>Static</item>
+        <item>Spiral</item>
+        <item>Blobs</item>
+        <item>WhirlPool</item>
+    </string-array>>
+
 </resources>

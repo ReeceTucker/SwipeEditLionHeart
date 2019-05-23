@@ -44,7 +44,8 @@ public class LoginActivity extends AppCompatActivity {
                             AccessTokenSource.TEST_USER,
                             new Date(System.currentTimeMillis() + 43200),
                             new Date(43200), new Date(43200)));
-
+            dialog.setMessage("Wait one moment, just fetching your images");
+            dialog.show();
             FindProfileDirectory();
 
         }
@@ -127,4 +128,10 @@ public class LoginActivity extends AppCompatActivity {
 
                 }).executeAsync();
     }
+
+    public void Turnoff()
+    {
+        dialog.dismiss();
+    }
+
 }

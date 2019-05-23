@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +15,6 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.facebook.AccessToken;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -105,8 +102,9 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
                 }
                 imageView.setImageBitmap(arrayEditedOfBitmaps.get(position));
                 SetPosition(position);
-                pictureSectionFragment.resetCaption();
+                pictureSectionFragment.ResetCaption();
                 fragmentSlider.restSliders();
+                pictureSectionFragment.SetOriginalImageViewBitmap(arrayEditedOfBitmaps.get(position));
             }
 
             @Override
@@ -166,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
         }
         imageView.setImageBitmap(arrayOfBitmaps.get(GetPosition()));
 
-        pictureSectionFragment.resetCaption();
+        pictureSectionFragment.ResetCaption();
         fragmentSlider.restSliders();
 
     }
@@ -194,21 +192,6 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     // the Interface method
     @Override
     public void colourImage(int iRed, int iGreen, int iBlue) {
@@ -219,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
             imageView = pictureSectionFragment.getView().findViewById(R.id.picture);
         }
         Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
-        imageView.setImageBitmap(pictureSectionFragment.Editphoto(bitmap, iRed, iGreen, iBlue));
+        imageView.setImageBitmap(pictureSectionFragment.EditPhotoRGB(bitmap, iRed, iGreen, iBlue));
         Toast.makeText(this, "To save this picture please press the save image button", Toast.LENGTH_SHORT).show();
     }
 
