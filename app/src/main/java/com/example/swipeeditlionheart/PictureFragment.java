@@ -82,7 +82,7 @@ public class PictureFragment extends Fragment implements AdapterView.OnItemSelec
         filters.put("Static", R.drawable.static_filter);
         filters.put("Spiral", R.drawable.spiral_filter);
         filters.put("Blobs", R.drawable.blobs_filter);
-        filters.put("Blobs", R.drawable.whirlpool_filter);
+        filters.put("Whirlpool", R.drawable.whirlpool_filter);
 
 
         // colour Spinner
@@ -227,6 +227,7 @@ public class PictureFragment extends Fragment implements AdapterView.OnItemSelec
 
             case R.id.spinner_filters:
 
+                ResetSliders();
                 ((TextView)view).setText(null);
                 String filterName = parent.getItemAtPosition(position).toString();
                 Integer filter = filters.get(filterName);
@@ -294,6 +295,12 @@ public class PictureFragment extends Fragment implements AdapterView.OnItemSelec
     private Bitmap GetOriginalImageViewBitmap()
     {
         return mOriginalBitmap;
+    }
+
+    public void ResetSliders()
+    {
+        SliderFragment sliderFragment = (SliderFragment) getFragmentManager().findFragmentById(R.id.slider_fragment);
+        sliderFragment.restSliders();
     }
 
 }

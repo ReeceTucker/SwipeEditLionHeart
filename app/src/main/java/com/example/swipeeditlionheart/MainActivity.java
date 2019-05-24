@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements SliderFragment.Sl
     private PictureFragment pictureSectionFragment = new PictureFragment();
 
     private SaveLoadImages saveLoadImages = new SaveLoadImages();
-    LoginActivity loginActivity;
 
     private boolean blocalImages = false;
 

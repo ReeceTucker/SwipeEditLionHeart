@@ -6,7 +6,7 @@
     <string name="reset_image">Reset image</string>
     <string name="facebook_app_id">2299208753450967</string>
     <string name="fb_login_protocol_scheme">fb2299208753450967</string>
-    <string name="fb_accessToken">EAAgrHkEDj9cBAE3O3j7oZCLItIV30iHjweudHFZCVEdeZAIZBR7ZCb2vJHJdyAZCFi8eGZASY3oGUjenNpVh7WMJUe4akCb6AQW4M0msB2YBknmNwS8xgVgllZBO0nxq2G0UCGqybeiAMxKhsZBAxPuK5F2vH5wfmDdUtJLRn2U9xiPaDpezoiVJBVLAcmQyMUQT5bctW4xgj3wMcJjo1JzkX</string>
+    <string name="fb_accessToken">EAAgrHkEDj9cBAEKxG9bvZC1UGozN64RXglqA29aAZCll7IANR9BMkVgXGqG8qRcbIgZCPVm7HZAeweC7HepdYehbgiZC4rlC5GZBiEBEZB0njzpX5nkyUJMyMcZBe8WX6AplEPGJTA8ZBgIwqyHW3fTMauwqN15MRR8TDMM1wZCgaT2KJvzFDZCEFZBc</string>
     <string name="fb_user_id">110853573486447</string>
 
     <string-array name = "colors">
@@ -28,7 +28,7 @@
         <item>Static</item>
         <item>Spiral</item>
         <item>Blobs</item>
-        <item>WhirlPool</item>
+        <item>Whirlpool</item>
     </string-array>>
 
 </resources>
